@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8">
+<title>Page Title</title>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link href="styles.css" rel="stylesheet"">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+
+    <div class="sidenav">
+        <div class="login-main-text">
+           <h2>Application<br> Login Page</h2>
+           <p>Login or register from here to access.</p>
+        </div>
+     </div>
+     <div class="main">
+        <div class="col-md-6 col-sm-12">
+           <div class="login-form">
+                <form id="login-form">
+                 <div class="form-group">
+                    <label>User Name</label>
+                    <input type="text" id="username" class="form-control" placeholder="User Name" name="username">
+                 </div>
+                 <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Password" name="password">
+                 </div>
+                 <button type="submit" class="btn btn-black">Login</button>
+                 <button type="submit" class="btn btn-secondary">Register</button>
+                </form>
+                <button onclick="logout()"  class="btn btn-danger" id="logout-button">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+    if(localStorage.getItem('access')){
+        $('#login-form').hide();
+        $('#logout-button').show();
+    } else {
+        $('#login-form').show();
+        $('#logout-button').hide();
+    }
+});
+
+    
+        //login function
+        $('#login-form').on('submit',function(e){
+            e.preventDefault();
+            $.ajax({
+                type:'POST',
+                url:'http://127.0.0.1:8000/api/token/',
+                data:{
+                    'username':$('#username').val(),
+                    'password':$('#password').val()
+                },
+                success: function(response){
+                    localStorage.setItem('access',response.access);
+                    localStorage.setItem('refresh', response.refresh);
+                    alert('Alhamdulillah Berhasil Login');
+                    $('#login-form').hide();
+                    $('#logout-button').show();
+                },
+                error: function(response){
+                    alert('Login Gagal')
+                }
+    
+            });
+        });
+    
+        //function logout
+        function logout(){
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            alert('Anda Berhasil Logout');
+    
+            $('#login-form').show();
+            $('#logout-button').hide();
+        }
+    
+    
+    </script>
+</body>
+</html>
